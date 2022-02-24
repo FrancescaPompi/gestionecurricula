@@ -54,7 +54,7 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 			throw new Exception("Valore di input non ammesso.");
 
 		Esperienza result = null;
-		try (PreparedStatement ps = connection.prepareStatement("select * from gestionecurricula.curriculum where id=?")) {
+		try (PreparedStatement ps = connection.prepareStatement("select * from gestionecurricula.esperienza where id=?")) {
 
 			ps.setLong(1, idInput);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -87,7 +87,7 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 
 		int result = 0;
 		try (PreparedStatement ps = connection.prepareStatement(
-				"UPDATE gestionecurricula.curriculum SET descrizione=?, dataInizio=?, dataFine=?, conoscenzeAcquisite=? where id=?;")) {
+				"UPDATE gestionecurricula.esperienza SET descrizione=?, dataInizio=?, dataFine=?, conoscenzeAcquisite=? where id=?;")) {
 			ps.setString(1, input.getDescrizione());
 			ps.setDate(2, new java.sql.Date(input.getDataInizio().getTime()));
 			ps.setDate(3, new java.sql.Date(input.getDataFine().getTime()));
@@ -134,7 +134,7 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 			throw new Exception("Valore di input non ammesso.");
 
 		int result = 0;
-		try (PreparedStatement ps = connection.prepareStatement("DELETE FROM gestionecurricula.curriculum WHERE ID=?")) {
+		try (PreparedStatement ps = connection.prepareStatement("DELETE FROM gestionecurricula.esperienza WHERE ID=?")) {
 			ps.setLong(1, input.getId());
 			result = ps.executeUpdate();
 		} catch (Exception e) {
@@ -155,7 +155,7 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 		ArrayList<Esperienza> result = new ArrayList<Esperienza>();
 		Esperienza espTemp = null;
 
-		String query = "select * from gestionecurricula.curriculum where 1=1 ";
+		String query = "select * from gestionecurricula.esperienza where 1=1 ";
 		if (input.getDescrizione() != null && !input.getDescrizione().isEmpty()) {
 			query += " and descrizione like '" + input.getDescrizione() + "%' ";
 		}

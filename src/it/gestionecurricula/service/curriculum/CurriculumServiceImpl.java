@@ -110,8 +110,11 @@ public class CurriculumServiceImpl implements CurriculumService {
 
 			// inietto la connection nel dao
 			curriculumDAO.setConnection(connection);
+			
+			if(input.getEsperienze().size() > 0) {
+				throw new RuntimeException("Prima di eliminare il curriculum, devi eliminare le esperienze associate.");
+			}
 
-			// eseguo quello che realmente devo fare
 			result = curriculumDAO.delete(input);
 
 		} catch (Exception e) {
