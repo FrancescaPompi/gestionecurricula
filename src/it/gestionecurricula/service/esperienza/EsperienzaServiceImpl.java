@@ -7,6 +7,7 @@ import java.util.List;
 import it.gestionecurricula.connection.MyConnection;
 import it.gestionecurricula.dao.Constants;
 import it.gestionecurricula.dao.esperienza.EsperienzaDAO;
+import it.gestionecurricula.model.Curriculum;
 import it.gestionecurricula.model.Esperienza;
 
 public class EsperienzaServiceImpl implements EsperienzaService{
@@ -77,6 +78,24 @@ public class EsperienzaServiceImpl implements EsperienzaService{
 		} 
 		return result;
 	}
+	
+	@Override
+	public List<Esperienza> findAllPerCurriculumOrdinate(Curriculum input) throws Exception {
+		List<Esperienza> result = new ArrayList<>();
+		try(Connection connection = MyConnection.getConnection(Constants.DRIVER_NAME, Constants.CONNECTION_URL)) {
+
+			// inietto la connection nel dao
+			esperienzaDAO.setConnection(connection);
+
+			// eseguo quello che realmente devo fare
+			result = esperienzaDAO.findAllByCurriculumOrderBy(input);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} 
+		return result;
+	}
 
 	@Override
 	public int inserisciNuovo(Esperienza input) throws Exception {
@@ -88,10 +107,20 @@ public class EsperienzaServiceImpl implements EsperienzaService{
 
 			// inietto la connection nel dao
 			esperienzaDAO.setConnection(connection);
-
+			
 			// eseguo quello che realmente devo fare
+			for(Esperienza espItem : esperienzaDAO.findAllByCurriculumOrderBy(input.getCurriculum())) {
+				// se non ci sono esperienze aperte
+				if(espItem.getDataFine() == null) {
+					// controllo che l'intervallo di tempo di input non preceda la data di inizio delle esperienze precedenti
+					if(input.getDataInizio().before(espItem.getDataInizio()) || input.getDataFine().before(espItem.getDataInizio())) {
+						throw new RuntimeException("Non puoi aggiungere esperienze con date coincidenti con le precedenti.");
+					}
+					espItem.setDataFine(input.getDataInizio());
+				}
+			}
 			result = esperienzaDAO.insert(input);
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

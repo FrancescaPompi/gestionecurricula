@@ -113,7 +113,7 @@ public class CurriculumDAOImpl extends AbstractMySQLDAO implements CurriculumDAO
 
 		int result = 0;
 		try (PreparedStatement ps = connection.prepareStatement(
-				"INSERT INTO user (nome, cognome, dataDiNascita, telefono, email) VALUES (?, ?, ?, ?, ?);")) {
+				"INSERT INTO gestionecurricula.curriculum (nome, cognome, dataDiNascita, telefono, email) VALUES (?, ?, ?, ?, ?);")) {
 			ps.setString(1, input.getNome());
 			ps.setString(2, input.getCognome());
 			ps.setDate(3, new java.sql.Date(input.getDataDiNascita().getTime()));

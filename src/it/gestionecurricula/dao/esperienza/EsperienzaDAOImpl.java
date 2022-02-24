@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.gestionecurricula.dao.AbstractMySQLDAO;
+import it.gestionecurricula.model.Curriculum;
 import it.gestionecurricula.model.Esperienza;
 
 public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO{
@@ -110,12 +111,12 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 
 		int result = 0;
 		try (PreparedStatement ps = connection.prepareStatement(
-				"INSERT INTO gestionecurricula.curriculum (descrizione, dataInizio, dataFine, conoscenzeAcquisite) VALUES (?, ?, ?, ?);")) {
+				"INSERT INTO gestionecurricula.esperienza (descrizione, dataInizio, dataFine, conoscenzeAcquisite, curriculum_id) VALUES (?, ?, ?, ?, ?);")) {
 			ps.setString(1, input.getDescrizione());
 			ps.setDate(2, new java.sql.Date(input.getDataInizio().getTime()));
 			ps.setDate(3, new java.sql.Date(input.getDataFine().getTime()));
 			ps.setString(4, input.getConoscenzeAcquisite());
-			ps.setLong(5, input.getId());
+			ps.setLong(5, input.getCurriculum().getId());
 			result = ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,6 +184,40 @@ public class EsperienzaDAOImpl extends AbstractMySQLDAO implements EsperienzaDAO
 				espTemp.setId(rs.getLong("id"));
 				result.add(espTemp);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return result;
+	}
+
+	@Override
+	public List<Esperienza> findAllByCurriculumOrderBy(Curriculum input) throws Exception {
+		if (isNotActive())
+			throw new Exception("Connessione non attiva. Impossibile effettuare operazioni DAO.");
+
+		if (input == null)
+			throw new Exception("Valore di input non ammesso.");
+
+		ArrayList<Esperienza> result = new ArrayList<Esperienza>();
+		Esperienza espTemp = null;
+
+		try (PreparedStatement ps = connection.prepareStatement("select * from gestionecurricula.esperienza e inner join gestionecurricula.curriculum c on c.id = e.curriculum_id where e.curriculum_id=? order by dataInizio;")) {
+			
+			ps.setLong(1, input.getId());
+
+			try (ResultSet rs = ps.executeQuery();) {
+				while (rs.next()) {
+					espTemp = new Esperienza();
+					espTemp.setDescrizione(rs.getString("descrizione"));
+					espTemp.setDataInizio(rs.getDate("dataInizio"));
+					espTemp.setDataFine(rs.getDate("dataFine"));
+					espTemp.setConoscenzeAcquisite(rs.getString("conoscenzeAcquisite"));
+					espTemp.setId(rs.getLong("id"));
+					result.add(espTemp);
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

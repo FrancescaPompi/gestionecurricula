@@ -4,6 +4,7 @@ import java.util.List;
 
 import it.gestionecurricula.dao.esperienza.EsperienzaDAO;
 import it.gestionecurricula.model.Esperienza;
+import it.gestionecurricula.model.Curriculum;
 
 public interface EsperienzaService {
 	
@@ -20,4 +21,6 @@ public interface EsperienzaService {
 	public int rimuovi(Esperienza input) throws Exception;
 
 	public List<Esperienza> findByExample(Esperienza input) throws Exception;
+	
+	public List<Esperienza> findAllPerCurriculumOrdinate(Curriculum input) throws Exception;
 }
