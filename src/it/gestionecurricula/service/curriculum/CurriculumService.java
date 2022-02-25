@@ -3,11 +3,14 @@ package it.gestionecurricula.service.curriculum;
 import java.util.List;
 
 import it.gestionecurricula.dao.curriculum.CurriculumDAO;
+import it.gestionecurricula.dao.esperienza.EsperienzaDAO;
 import it.gestionecurricula.model.Curriculum;
 
 public interface CurriculumService {
 
 	public void setCurriculumDAO(CurriculumDAO curriculumDAO);
+	
+	public void setEsperienzaDAO(EsperienzaDAO esperienzaDAO);
 
 	public List<Curriculum> listAll() throws Exception;
 

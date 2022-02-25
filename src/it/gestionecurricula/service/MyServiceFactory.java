@@ -12,6 +12,7 @@ public class MyServiceFactory {
 	public static CurriculumService getCurriculumServiceImpl() {
 		CurriculumService curriculumService = new CurriculumServiceImpl();
 		curriculumService.setCurriculumDAO(new CurriculumDAOImpl());
+		curriculumService.setEsperienzaDAO(new EsperienzaDAOImpl());
 		return curriculumService;
 	}
 
